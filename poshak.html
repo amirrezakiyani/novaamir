@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="theme-color" content="#0A0A0F"/>
+<title>نُوا — بوتیک پوشاک منتخب</title>
+<!-- ═══════════ راهنمای سریع برای صاحب فروشگاه ═══════════
+ ۱) اسم فروشگاه: در کل صفحه «NOVA» و «نُوا» را با اسم خودت عوض کن (Ctrl+H)
+ ۲) محصولات: در بخش اسکریپت، آرایه‌ی PRODUCTS (نام، قیمت، توضیح، لینک عکس)
+ ۳) عکس محصول: در imgbb.com آپلود کن → Direct link را در img بگذار
+ ۴) شماره تماس و آدرس: بخش footer را ویرایش کن
+ ۵) سفارش‌ها: با Netlify Forms به پنل + ایمیلت می‌رسند (تنظیم ایمیل در پنل نتلیفی است، نه در این کد)
+═════════════════════════════════════════════════════════ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0A0F; --bg2:#0E0E15; --card:#14141D; --card2:#191925;
+  --text:#F5F3EE; --muted:#A29DAF;
+  --acc:#A78BFA; --acc2:#F472B6;
+  --line:rgba(245,243,238,.1); --line2:rgba(245,243,238,.06);
+  --sans:'Vazirmatn',sans-serif; --disp:'Syne',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);overflow-x:hidden}
+::selection{background:var(--acc);color:#0A0A0F}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#2A2A38;border:2px solid var(--bg);border-radius:8px}
+img{display:block}
+:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+::placeholder{color:#6B677A}
+.wrap{max-width:1280px;margin-inline:auto;padding-inline:clamp(20px,5vw,56px)}
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s cubic-bezier(.22,.61,.36,1);transition-delay:var(--d,0s)}
+.reveal.in{opacity:1;transform:none}
+
+/* ───── دکمه‌ها ───── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 30px;font:600 .95rem var(--sans);border:1px solid var(--text);cursor:pointer;transition:.3s;text-decoration:none;border-radius:2px;color:var(--text);background:transparent}
+.btn.solid{background:var(--text);color:#0A0A0F}
+.btn.solid:hover{background:var(--acc);border-color:var(--acc)}
+.btn.ghost{border-color:var(--line)}
+.btn.ghost:hover{border-color:var(--text)}
+.btn svg{width:17px;height:17px}
+.w-full{width:100%}
+
+/* ───── هدر ───── */
+.site-head{position:fixed;inset-inline:0;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,48px);transition:.4s}
+.site-head.scrolled{background:rgba(10,10,15,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line2);padding-block:12px}
+.brand{font-family:var(--disp);font-weight:800;font-size:1.35rem;letter-spacing:.16em;color:var(--text);text-decoration:none;display:flex;flex-direction:column;line-height:1.25}
+.brand span{font-family:var(--sans);font-size:.64rem;letter-spacing:0;color:var(--acc);font-weight:500}
+.main-nav{display:flex;gap:clamp(18px,3vw,40px)}
+.main-nav a{color:var(--text);text-decoration:none;font-size:.95rem;font-weight:500;position:relative;padding-bottom:4px}
+.main-nav a::after{content:'';position:absolute;bottom:0;inset-inline-start:0;width:0;height:1px;background:var(--acc);transition:.35s}
+.main-nav a:hover::after{width:100%}
+.head-actions{display:flex;gap:8px;align-items:center}
+.icon-btn{position:relative;width:44px;height:44px;display:grid;place-items:center;background:transparent;border:1px solid transparent;cursor:pointer;color:var(--text);transition:.3s;border-radius:2px}
+.icon-btn:hover{border-color:var(--line)}
+.icon-btn svg{width:21px;height:21px}
+.bag-badge{position:absolute;top:3px;inset-inline-start:3px;min-width:18px;height:18px;padding-inline:4px;background:var(--acc);color:#0A0A0F;font-size:.68rem;font-weight:800;display:grid;place-items:center;border-radius:999px}
+.bag-btn.bump svg{animation:bump .45s}
+@keyframes bump{40%{transform:scale(1.3)}}
+.menu-btn{display:none}
+
+/* ───── هیرو ───── */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;padding-top:96px;padding-bottom:48px}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--line2) 1px,transparent 1px),linear-gradient(90deg,var(--line2) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 85% 70% at 50% 40%,#000 30%,transparent 78%);mask-image:radial-gradient(ellipse 85% 70% at 50% 40%,#000 30%,transparent 78%)}
+.aurora{position:absolute;inset:-20%;filter:blur(90px);opacity:.5;pointer-events:none}
+.aurora i{position:absolute;border-radius:50%}
+.a1{width:44vw;height:44vw;background:#5B21B6;top:-6%;inset-inline-start:38%;animation:dr1 18s ease-in-out infinite alternate}
+.a2{width:36vw;height:36vw;background:#9D174D;bottom:-8%;inset-inline-end:4%;animation:dr2 22s ease-in-out infinite alternate}
+.a3{width:22vw;height:22vw;background:#1D4ED8;top:30%;inset-inline-end:30%;opacity:.65;animation:dr1 26s ease-in-out infinite alternate-reverse}
+@keyframes dr1{to{transform:translate(8%,12%) scale(1.15)}}
+@keyframes dr2{to{transform:translate(-10%,-8%) scale(.9)}}
+.hero-inner{position:relative;z-index:2;display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(30px,4vw,60px);align-items:center;width:100%}
+.kicker{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:999px;padding:8px 16px;color:var(--acc);font-size:.85rem;font-weight:600;background:rgba(20,20,29,.5)}
+.kicker i{width:7px;height:7px;border-radius:50%;background:var(--acc);animation:pulse 2s infinite}
+@keyframes pulse{50%{opacity:.25}}
+h1{font-size:clamp(2.7rem,7.2vw,5.4rem);line-height:1.12;font-weight:800;margin-top:26px}
+h1 em{font-style:normal;background:linear-gradient(120deg,#C4B5FD,#F9A8D4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero-sub{margin-top:22px;color:var(--muted);font-size:clamp(.98rem,1.3vw,1.1rem);line-height:2.1;max-width:46ch;font-weight:300}
+.hero-cta{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap}
+.hero-note{margin-top:28px;display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);font-size:.85rem}
+.hero-note span{display:flex;gap:8px;align-items:center}
+.hero-note svg{width:15px;height:15px;color:var(--acc);flex:none}
+
+/* کارت‌های شناور سه‌بعدی */
+.hv{position:relative;height:min(600px,72vh)}
+.hv-mark{position:absolute;bottom:2%;inset-inline-end:-3%;font:800 clamp(5rem,15vw,11rem)/1 var(--disp);color:transparent;-webkit-text-stroke:1px rgba(245,243,238,.09);letter-spacing:.06em;user-select:none;pointer-events:none;z-index:0}
+.layer{position:absolute;inset:0;pointer-events:none;will-change:transform}
+.bob{animation:bob var(--bt,8s) ease-in-out var(--bd,0s) infinite;height:100%}
+@keyframes bob{50%{transform:translateY(-14px)}}
+.hv-card{position:absolute;background:var(--card);border:1px solid var(--line);padding:10px;border-radius:10px;box-shadow:0 40px 80px rgba(0,0,0,.5);transform:rotate(var(--r,0deg))}
+.hv-card img{border-radius:6px;object-fit:cover;width:100%;filter:saturate(.94)}
+.c1{width:min(290px,58%);right:9%;top:3%;--r:-6deg;--bt:7.5s;z-index:3}
+.c1 img{aspect-ratio:3/4}
+.c2{width:min(230px,46%);left:0;top:34%;--r:7deg;--bt:9.5s;z-index:2}
+.c2 img{aspect-ratio:4/5}
+.c3{width:min(165px,34%);left:30%;bottom:2%;--r:-5deg;--bt:8.5s;z-index:1}
+.c3 img{aspect-ratio:1/1}
+.ptag{position:absolute;bottom:22px;inset-inline-start:22px;background:rgba(10,10,15,.78);backdrop-filter:blur(6px);border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:.78rem;font-weight:700;z-index:2}
+.ptag b{color:var(--acc);font-weight:800}
+.chip-f{position:absolute;z-index:5;display:flex;gap:9px;align-items:center;background:rgba(20,20,29,.88);backdrop-filter:blur(8px);border:1px solid var(--line);border-radius:999px;padding:11px 18px;font-size:.84rem;font-weight:600;box-shadow:0 14px 34px rgba(0,0,0,.4)}
+.chip-f svg{width:16px;height:16px;color:var(--acc);flex:none}
+.f1{top:5%;left:14%;--bt:6.5s}
+.f2{bottom:13%;right:24%;--bt:7.8s}
+
+/* ───── نوار متحرک ───── */
+.marquee{border-block:1px solid var(--line);overflow:hidden;padding-block:14px;background:var(--bg2)}
+.marquee-track{display:flex;width:max-content;animation:mq 28s linear infinite}
+.m-item{display:flex;align-items:center;gap:26px;padding-inline-start:26px;white-space:nowrap;font-size:.88rem;font-weight:500;color:var(--muted)}
+.m-item i{width:7px;height:7px;background:var(--acc);transform:rotate(45deg);display:block;flex:none}
+@keyframes mq{to{transform:translateX(50%)}}
+
+/* ───── بخش‌ها ───── */
+.section{padding-block:clamp(72px,10vw,130px)}
+.sec-head{display:flex;align-items:flex-end;gap:26px;padding-bottom:30px;border-bottom:1px solid var(--line);margin-bottom:clamp(44px,6vw,80px)}
+.sec-no{font-family:var(--disp);font-weight:800;font-size:clamp(2.6rem,6vw,4.4rem);line-height:.9;color:transparent;-webkit-text-stroke:1.2px rgba(196,181,253,.5)}
+.sec-head h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800}
+.sec-head p{color:var(--muted);margin-top:8px;font-size:.95rem;max-width:52ch}
+
+/* ───── کالکشن ───── */
+.collection-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(20px,3vw,48px) clamp(18px,2.5vw,36px)}
+.card{position:relative;cursor:pointer}
+.card-num{display:block;font-family:var(--disp);font-weight:800;font-size:1.8rem;color:transparent;-webkit-text-stroke:1px rgba(196,181,253,.55);line-height:1;margin-bottom:12px}
+.card figure{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;transition:border-color .35s}
+.card:hover figure{border-color:rgba(167,139,250,.5)}
+.card img{width:100%;height:100%;object-fit:cover;border-radius:6px;transition:transform 1s cubic-bezier(.22,.61,.36,1)}
+.card:hover img{transform:scale(1.05)}
+.tag{position:absolute;bottom:20px;inset-inline-start:20px;background:rgba(10,10,15,.82);border:1px solid var(--acc);color:var(--acc);font-size:.72rem;font-weight:700;padding:6px 12px;border-radius:999px;z-index:2}
+.card-row{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding-top:16px;border-top:1px solid var(--line);margin-top:16px}
+.card h3{font-size:1rem;font-weight:600}
+.price{font-weight:700;white-space:nowrap;transition:color .3s}
+.price small{font-weight:500;font-size:.72em;color:var(--muted)}
+.card:hover .price{color:var(--acc2)}
+.p1{grid-column:1/7}       .p1 figure{aspect-ratio:4/5}
+.p2{grid-column:8/13;margin-top:120px}  .p2 figure{aspect-ratio:3/3.6}
+.p3{grid-column:2/6;margin-top:90px}    .p3 figure{aspect-ratio:3/3.8}
+.p4{grid-column:7/13;margin-top:30px}   .p4 figure{aspect-ratio:4/3.4}
+.p5{grid-column:1/8;margin-top:60px}    .p5 figure{aspect-ratio:16/10}
+.p6{grid-column:9/13;margin-top:150px}  .p6 figure{aspect-ratio:3/4}
+
+/* ───── راهنمای سایز ───── */
+#atelier{background:var(--bg2);border-block:1px solid var(--line2)}
+.at-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(32px,5vw,80px);align-items:center}
+.at-media img{width:100%;aspect-ratio:4/3;object-fit:cover;border:1px solid var(--line);border-radius:10px;padding:10px;background:var(--card)}
+.at-media figcaption{margin-top:14px;font-size:.82rem;color:var(--muted);display:flex;gap:10px;align-items:center}
+.at-media figcaption::before{content:'';width:28px;height:1px;background:var(--acc)}
+.lead{font-size:1.18rem;line-height:2;font-weight:500}
+.sfield{margin-top:30px}
+.sfield label{display:flex;justify-content:space-between;font-weight:600;font-size:.95rem;margin-bottom:16px}
+.sfield output{color:var(--acc);font-weight:800;font-size:1.05rem}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:rgba(245,243,238,.15);border-radius:2px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--text);border:6px solid var(--bg2);box-shadow:0 0 0 1.5px var(--acc);cursor:pointer;transition:.2s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:var(--text);border:6px solid var(--bg2);box-shadow:0 0 0 1.5px var(--acc);cursor:pointer}
+.size-result{margin-top:40px;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:26px 28px}
+.size-result h4{font-size:.85rem;font-weight:700;color:var(--acc)}
+.size-track{display:flex;gap:10px;margin-top:14px}
+.size-track span{flex:1;text-align:center;padding:12px 0;border:1px solid var(--line);border-radius:6px;font-weight:700;color:var(--muted);transition:.35s}
+.size-track span.on{background:var(--acc);color:#0A0A0F;border-color:var(--acc);animation:pop .4s}
+@keyframes pop{45%{transform:scale(1.1)}}
+.size-note{margin-top:16px;font-size:.9rem;line-height:1.9;color:var(--muted);min-height:3.4em}
+.size-note b{color:var(--acc2)}
+.tiny{font-size:.78rem;color:var(--muted);margin-top:14px}
+
+/* ───── داستان ───── */
+.story{background:var(--bg2);border-block:1px solid var(--line2)}
+.story-text{font-weight:300;font-size:clamp(1.2rem,2.5vw,1.8rem);line-height:2.1;max-width:56ch}
+.story-text em{font-style:normal;color:var(--acc2)}
+.stats{display:flex;flex-wrap:wrap;gap:40px 80px;margin-top:clamp(56px,7vw,88px)}
+.stats b{display:block;font-family:var(--disp);font-size:clamp(2.2rem,4vw,3.2rem);font-weight:800;line-height:1.25;background:linear-gradient(120deg,#C4B5FD,#F9A8D4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats span{color:var(--muted);font-size:.92rem}
+
+/* ───── فوتر ───── */
+footer{background:var(--bg2);border-top:1px solid var(--line2);padding-top:clamp(56px,7vw,90px)}
+.foot-grid{display:grid;grid-template-columns:1.5fr 1.1fr .9fr 1.3fr;gap:clamp(28px,4vw,56px);padding-bottom:64px}
+.foot-brand .brand{font-size:1.7rem}
+.foot-brand p{margin-top:18px;color:var(--muted);line-height:2;font-size:.92rem;max-width:34ch}
+footer h4{font-size:.85rem;font-weight:700;color:var(--acc);margin-bottom:20px}
+.f-list{list-style:none;display:flex;flex-direction:column;gap:14px;font-size:.92rem}
+.f-list li,.f-list a{display:flex;gap:10px;align-items:center;color:var(--text);text-decoration:none}
+.f-list svg{width:16px;height:16px;color:var(--acc);flex:none}
+.f-list a:hover{color:var(--acc)}
+.nl{display:flex;border:1px solid var(--line);border-radius:2px;overflow:hidden}
+.nl input{flex:1;min-width:0;border:0;outline:0;background:var(--card);padding:13px 14px;font:inherit;font-size:.9rem;color:var(--text)}
+.nl button{border:0;background:var(--text);color:#0A0A0F;padding:0 20px;font:inherit;font-weight:700;cursor:pointer;transition:.3s}
+.nl button:hover{background:var(--acc)}
+.nl-err{color:#F87171;font-size:.78rem;margin-top:8px;min-height:1.2em}
+.foot-base{border-top:1px solid var(--line2);padding-block:22px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+
+/* ───── مودال محصول ───── */
+.modal{position:fixed;inset:0;z-index:920;display:grid;place-items:center;padding:20px;visibility:hidden;opacity:0;transition:.35s}
+.modal.open{visibility:visible;opacity:1}
+.modal-scrim{position:absolute;inset:0;background:rgba(0,0,0,.65)}
+.modal-card{position:relative;background:var(--bg2);width:min(860px,100%);display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:12px;transform:translateY(16px);transition:.4s;overflow:hidden}
+.modal.open .modal-card{transform:none}
+.modal-card figure{overflow:hidden;background:var(--card)}
+.modal-card img{width:100%;height:100%;object-fit:cover;max-height:580px}
+.qv-body{padding:clamp(24px,3vw,44px);display:flex;flex-direction:column}
+.qv-tag{color:var(--acc);font-size:.78rem;font-weight:700}
+.qv-body h3{font-size:1.4rem;margin-top:10px}
+.qv-desc{color:var(--muted);line-height:2;margin-top:12px;font-size:.9rem;font-weight:300}
+.qv-price{margin-top:18px;font-size:1.25rem;font-weight:800}
+.qv-price small{font-size:.65em;font-weight:500;color:var(--muted)}
+.qv-sizes{display:flex;gap:8px;margin-top:22px}
+.qv-sizes button{flex:1;padding:11px 0;background:transparent;border:1px solid var(--line);border-radius:6px;font:inherit;font-weight:700;cursor:pointer;transition:.25s;color:var(--muted)}
+.qv-sizes button:hover{border-color:var(--text);color:var(--text)}
+.qv-sizes button.on{background:var(--acc);color:#0A0A0F;border-color:var(--acc)}
+.qv-err{color:#F87171;font-size:.82rem;margin-top:12px}
+.qv-body .btn{margin-top:22px}
+.x{position:absolute;top:12px;inset-inline-start:12px;z-index:3;width:40px;height:40px;display:grid;place-items:center;background:var(--card);border:1px solid var(--line);border-radius:50%;cursor:pointer;transition:.3s;color:var(--text)}
+.x:hover{background:var(--acc);color:#0A0A0F;border-color:var(--acc)}
+.x svg{width:18px;height:18px}
+
+/* ───── کشوی سبد ───── */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:890;opacity:0;visibility:hidden;transition:.4s}
+.scrim.open{opacity:1;visibility:visible}
+.drawer{position:fixed;top:0;bottom:0;left:0;z-index:900;width:min(430px,94vw);background:var(--bg2);border-right:1px solid var(--line);transform:translateX(-105%);transition:transform .5s cubic-bezier(.22,.61,.36,1);display:flex;flex-direction:column}
+.drawer.open{transform:none}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding:20px 26px;border-bottom:1px solid var(--line)}
+.drawer-head h3{font-size:1.05rem}
+.drawer .view{display:none;flex-direction:column;flex:1;min-height:0}
+.drawer .view.on{display:flex}
+.drawer-body{flex:1;overflow-y:auto;padding:6px 26px}
+.drawer-foot{border-top:1px solid var(--line);padding:20px 26px}
+.total-row{display:flex;justify-content:space-between;align-items:baseline}
+.total-row b{font-size:1.1rem;font-weight:800}
+.c-item{display:flex;gap:14px;padding-block:18px;border-bottom:1px solid var(--line2)}
+.c-item img{width:72px;height:92px;object-fit:cover;border-radius:6px;border:1px solid var(--line)}
+.c-info{flex:1}
+.c-info h4{font-size:.9rem;font-weight:600}
+.c-size{font-size:.78rem;color:var(--muted);display:block;margin-top:4px}
+.c-qty{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:6px;margin-top:10px}
+.c-qty button{width:28px;height:28px;display:grid;place-items:center;background:none;border:0;cursor:pointer;color:var(--text)}
+.c-qty button:hover{color:var(--acc)}
+.c-qty button svg{width:13px;height:13px}
+.c-qty b{min-width:26px;text-align:center;font-size:.85rem}
+.c-side{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between}
+.c-side .price{font-size:.88rem}
+.c-del{background:none;border:0;cursor:pointer;color:var(--muted);padding:4px}
+.c-del:hover{color:#F87171}
+.c-del svg{width:15px;height:15px}
+.cart-empty{display:flex;flex-direction:column;align-items:center;gap:16px;padding-block:70px;color:var(--muted);text-align:center;line-height:2}
+.cart-empty svg{width:34px;height:34px;color:var(--acc)}
+
+/* فرم تسویه */
+.form{padding:24px 26px;display:flex;flex-direction:column;gap:18px;overflow-y:auto;flex:1}
+.form label{font-size:.85rem;font-weight:600;display:block;margin-bottom:8px}
+.form input,.form textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:6px;padding:12px 14px;font:inherit;font-size:.92rem;color:var(--text);outline:0;transition:border-color .3s;resize:vertical}
+.form input:focus,.form textarea:focus{border-color:var(--acc)}
+.f-err{color:#F87171;font-size:.78rem;margin-top:6px;display:none}
+.field.bad input,.field.bad textarea{border-color:#F87171}
+.field.bad .f-err{display:block}
+.form-foot{padding:20px 26px;border-top:1px solid var(--line)}
+.back-link{display:flex;gap:8px;align-items:center;background:none;border:0;font:inherit;font-size:.85rem;color:var(--muted);cursor:pointer;margin-bottom:14px;padding:0}
+.back-link:hover{color:var(--acc)}
+.back-link svg{width:15px;height:15px}
+
+/* رسید موفقیت */
+.success{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:32px;gap:6px}
+.success .ok{width:74px;height:74px;border:1px solid var(--acc);border-radius:50%;display:grid;place-items:center;color:var(--acc);margin-bottom:14px;animation:pop .5s}
+.success .ok svg{width:30px;height:30px}
+.success h4{font-size:1.25rem}
+.track{color:var(--acc);font-weight:800;margin-top:8px}
+.success p{color:var(--muted);font-size:.88rem;line-height:2;max-width:30ch;margin-top:6px}
+.success .btn{margin-top:20px}
+
+/* ───── توست و منوی موبایل ───── */
+.toasts{position:fixed;bottom:26px;left:50%;transform:translateX(-50%);z-index:950;display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:max-content;max-width:92vw}
+.toast{display:flex;gap:10px;align-items:center;background:var(--card2);border:1px solid var(--line);color:var(--text);padding:13px 22px;border-radius:8px;font-size:.88rem;animation:tin .45s cubic-bezier(.22,.61,.36,1);box-shadow:0 16px 40px rgba(0,0,0,.5)}
+.toast svg{width:16px;height:16px;color:var(--acc);flex:none}
+.toast.bye{animation:tout .4s forwards}
+@keyframes tin{from{opacity:0;transform:translateY(14px)}}
+@keyframes tout{to{opacity:0;transform:translateY(10px)}}
+.fly-dot{position:fixed;z-index:960;width:12px;height:12px;border-radius:50%;background:var(--acc);pointer-events:none;transition:transform .75s cubic-bezier(.3,.6,.3,1),opacity .75s}
+.m-menu{position:fixed;inset:0;z-index:880;background:var(--bg);display:flex;flex-direction:column;justify-content:center;padding:0 8vw;opacity:0;visibility:hidden;transition:.4s}
+.m-menu.open{opacity:1;visibility:visible}
+.m-menu a{font-size:2rem;font-weight:800;color:var(--text);text-decoration:none;padding-block:16px;border-bottom:1px solid var(--line2)}
+.m-menu a:active{color:var(--acc)}
+
+/* ───── واکنش‌گرا ───── */
+@media(max-width:1020px){.foot-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:860px){
+  .main-nav{display:none}.menu-btn{display:grid}
+  .hero-inner{grid-template-columns:1fr}
+  .hv{height:440px;margin-top:8px}
+  .hv-mark{font-size:5rem}
+  .collection-grid .card{grid-column:1/13;margin-top:0}
+  .collection-grid .card figure{aspect-ratio:4/5}
+  .at-grid{grid-template-columns:1fr}
+  .sec-head{gap:16px;align-items:center}
+}
+@media(max-width:640px){.foot-grid{grid-template-columns:1fr}.modal-card{grid-template-columns:1fr}.modal-card img{max-height:300px}.hv{height:380px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="site-head" id="siteHead">
+  <a href="#" class="brand">NOVA<span>نُوا · بوتیک پوشاک منتخب</span></a>
+  <nav class="main-nav">
+    <a href="#collection">اجناس</a>
+    <a href="#atelier">راهنمای سایز</a>
+    <a href="#story">درباره‌ی نُوا</a>
+    <a href="#contact">تماس</a>
+  </nav>
+  <div class="head-actions">
+    <button class="icon-btn bag-btn" id="bagBtn" aria-label="سبد خرید">
+      <i data-lucide="shopping-bag"></i><span class="bag-badge" id="bagBadge" hidden></span>
+    </button>
+    <button class="icon-btn menu-btn" id="menuBtn" aria-label="منو"><i data-lucide="menu"></i></button>
+  </div>
+</header>
+
+<!-- هیرو -->
+<section class="hero" id="hero">
+  <div class="aurora" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
+  <div class="wrap hero-inner">
+    <div>
+      <span class="kicker"><i></i> بوتیک آنلاین · کالکشن این هفته رسید</span>
+      <h1>استایل خوب،<br>لازم نیست <em>گران</em> باشد.</h1>
+      <p class="hero-sub">هر هفته یک کپسول از بهترین قطعه‌ها را انتخاب می‌کنیم، کیفیتش را می‌سنجیم و بی‌واسطه با قیمت منصفانه به دستت می‌رسانیم — آماده‌ی ارسال به سراسر ایران.</p>
+      <div class="hero-cta">
+        <a href="#collection" class="btn solid">دیدن اجناس <i data-lucide="arrow-left"></i></a>
+        <a href="#atelier" class="btn ghost">راهنمای سایز</a>
+      </div>
+      <div class="hero-note">
+        <span><i data-lucide="truck"></i> ارسال سراسری</span>
+        <span><i data-lucide="shield-check"></i> ضمانت بازگشت ۷ روزه</span>
+        <span><i data-lucide="sparkles"></i> جنسِ منتخب و سلیقه‌دار</span>
+      </div>
+    </div>
+    <div class="hv" id="hv" aria-hidden="true">
+      <span class="hv-mark">NOVA</span>
+      <div class="layer" data-depth="12"><div class="bob" style="--bt:7.5s">
+        <figure class="hv-card c1">
+          <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80&auto=format&fit=crop" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/nova-h1/600/800.jpg'">
+          <span class="ptag">مانتو «سرو» — <b>۲٫۴۵۰٫۰۰۰</b></span>
+        </figure>
+      </div></div>
+      <div class="layer" data-depth="24"><div class="bob" style="--bt:9.5s;--bd:.6s">
+        <figure class="hv-card c2">
+          <img src="https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80&auto=format&fit=crop" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/nova-h2/600/750.jpg'">
+        </figure>
+      </div></div>
+      <div class="layer" data-depth="8"><div class="bob" style="--bt:8.5s;--bd:.3s">
+        <figure class="hv-card c3">
+          <img src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&q=80&auto=format&fit=crop" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/nova-h3/600/600.jpg'">
+        </figure>
+      </div></div>
+      <div class="layer" data-depth="32"><div class="bob" style="--bt:6.5s;--bd:.9s">
+        <span class="chip-f f1"><i data-lucide="truck"></i> ارسال به سراسر ایران</span>
+      </div></div>
+      <div class="layer" data-depth="20"><div class="bob" style="--bt:7.8s;--bd:.4s">
+        <span class="chip-f f2"><i data-lucide="shield-check"></i> ضمانت اصالت جنس</span>
+      </div></div>
+    </div>
+  </div>
+</section>
+
+<!-- نوار متحرک -->
+<div class="marquee" aria-hidden="true"><div class="marquee-track" id="mqTrack"></div></div>
+
+<!-- کالکشن -->
+<section class="section" id="collection">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-no">۰۱</span>
+      <div><h2>اجناس این هفته</h2><p>هر قطعه را خودمان انتخاب و بررسی کرده‌ایم. موجودی محدود است.</p></div>
+    </div>
+    <div class="collection-grid" id="grid"></div>
+  </div>
+</section>
+
+<!-- راهنمای سایز -->
+<section class="section" id="atelier">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-no">۰۲</span>
+      <div><h2>راهنمای سایز</h2><p>پیش از خرید، تن‌سنجی کن.</p></div>
+    </div>
+    <div class="at-grid">
+      <figure class="at-media reveal">
+        <img loading="lazy" src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=760&q=80&auto=format&fit=crop" alt="انتخاب لباس" onerror="this.onerror=null;this.src='https://picsum.photos/seed/nova-size/760/570.jpg'">
+        <figcaption>اندازه، برندِ شانس نیست.</figcaption>
+      </figure>
+      <div class="reveal" style="--d:.12s">
+        <p class="lead">قد و وزنت را روی لغزنده‌ها ببر تا ببینیم کدام سایز برای تنِ تو مناسب‌تر است.</p>
+        <div class="sfield">
+          <label>قد <span><output id="hOut">۱۷۰</output> سانتی‌متر</span></label>
+          <input type="range" id="hIn" min="145" max="200" value="170">
+        </div>
+        <div class="sfield">
+          <label>وزن <span><output id="wOut">۷۰</output> کیلوگرم</span></label>
+          <input type="range" id="wIn" min="40" max="130" value="70">
+        </div>
+        <div class="size-result">
+          <h4>سایز پیشنهادی</h4>
+          <div class="size-track" id="sizeTrack">
+            <span data-s="S">S</span><span data-s="M">M</span><span data-s="L">L</span><span data-s="XL">XL</span><span data-s="XXL">XXL</span>
+          </div>
+          <p class="size-note" id="sizeNote"></p>
+        </div>
+        <p class="tiny">این پیشنهاد تقریبی است؛ اگر بین دو سایز مرددی، برای مشاوره پیام بده.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- داستان -->
+<section class="story section" id="story">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="sec-no">۰۳</span>
+      <div><h2>درباره‌ی نُوا</h2><p>چرا بی‌واسطه؟</p></div>
+    </div>
+    <p class="story-text reveal">نُوا از یک سؤال ساده شروع شد: چرا لباسِ خوب باید یا خیلی گران باشد یا بی‌کیفیت؟ ما هر قطعه را خودمان انتخاب می‌کنیم، کیفیتش را می‌سنجیم و <em>بی‌واسطه</em> به دست تو می‌رسانیم. بدون واسطه، بدون هزینه‌ی اضافه — فقط استایلِ خوب.</p>
+    <div class="stats reveal">
+      <div><b>۱۰۰٪</b><span>جنسِ انتخاب‌شده و بررسی‌شده</span></div>
+      <div><b>۲۴</b><span>ساعت پاسخ‌گویی به پیام‌ها</span></div>
+      <div><b>۷</b><span>روز ضمانت بازگشت بدون قیدوشرط</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- فوتر -->
+<footer id="contact">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a href="#" class="brand">NOVA<span>نُوا · بوتیک پوشاک منتخب</span></a>
+        <p>هر هفته اجناس جدید؛ محدود، سلیقه‌دار و منصفانه. برای باخبر شدن از کالکشن جدید، عضو خبرنامه شو.</p>
+      </div>
+      <div>
+        <h4>تماس</h4>
+        <ul class="f-list">
+          <li><i data-lucide="phone"></i> 09034153445</li>
+          <li><i data-lucide="map-pin"></i> ارسال به سراسر ایران از [شهر تو]</li>
+          <li><i data-lucide="clock"></i> هر روز ۱۰ تا ۲۲ پاسخ‌گو هستیم</li>
+        </ul>
+      </div>
+      <div>
+        <h4>دنبال کن</h4>
+        <ul class="f-list">
+          <li><a href="#"><i data-lucide="instagram"></i> nova.style</a></li>
+          <li><a href="#"><i data-lucide="send"></i> تلگرام نُوا</a></li>
+          <li><a href="#"><i data-lucide="message-circle"></i> واتساپ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>خبرنامه</h4>
+        <form class="nl" id="nlForm" name="newsletter" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="newsletter">
+          <input type="text" id="nlInput" name="email" placeholder="ایمیل شما" aria-label="ایمیل">
+          <button type="submit">عضویت</button>
+        </form>
+        <p class="nl-err" id="nlErr"></p>
+        <p class="tiny">اول از همه، کالکشن جدید را ببین.</p>
+      </div>
+    </div>
+    <div class="foot-base">
+      <span>© ۱۴۰۳ نُوا — تمام حقوق محفوظ است.</span>
+      <span>ساخته‌شده با ❤ در ایران</span>
+    </div>
+  </div>
+</footer>
+
+<!-- مودال محصول -->
+<div class="modal" id="qv" aria-hidden="true">
+  <div class="modal-scrim" data-close></div>
+  <div class="modal-card">
+    <button class="x" data-close aria-label="بستن"><i data-lucide="x"></i></button>
+    <figure><img id="qvImg" alt=""></figure>
+    <div class="qv-body">
+      <span class="qv-tag" id="qvTag"></span>
+      <h3 id="qvName"></h3>
+      <p class="qv-desc" id="qvDesc"></p>
+      <div class="qv-price" id="qvPrice"></div>
+      <div class="qv-sizes" id="qvSizes"></div>
+      <p class="qv-err" id="qvErr" hidden>لطفاً یک سایز انتخاب کنید.</p>
+      <button class="btn solid w-full" id="qvAdd">افزودن به سبد <i data-lucide="shopping-bag"></i></button>
+      <p class="tiny">ارسال با پست پیشتاز — پرداخت در محل برای تهران — بازگشت ۷ روزه</p>
+    </div>
+  </div>
+</div>
+
+<!-- کشوی سبد -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-label="سبد خرید">
+  <div class="drawer-head">
+    <h3>سبد خرید</h3>
+    <button class="icon-btn" id="drawerClose" aria-label="بستن"><i data-lucide="x"></i></button>
+  </div>
+  <div class="view on" id="view-cart">
+    <div class="drawer-body" id="cartBody"></div>
+    <div class="drawer-foot" id="cartFoot">
+      <div class="total-row"><span>جمع سبد</span><b id="cartTotal"></b></div>
+      <p class="tiny">هزینه‌ی ارسال پس از هماهنگی محاسبه می‌شود.</p>
+      <button class="btn solid w-full" id="checkoutBtn" style="margin-top:14px">ثبت سفارش</button>
+    </div>
+  </div>
+
+  <div class="view" id="view-checkout">
+    <!-- فرم سفارش: با Netlify Forms به پنل و ایمیل شما ارسال می‌شود -->
+    <form class="form" id="checkoutForm" name="orders" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="orders">
+      <p hidden><label>خالی بگذار: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+      <button type="button" class="back-link" id="backToCart"><i data-lucide="arrow-right"></i> بازگشت به سبد</button>
+      <div class="field"><label>نام و نام خانوادگی</label><input id="fName" name="name" type="text" placeholder="مثلاً سارا محمدی"><span class="f-err">نام را کامل بنویسید.</span></div>
+      <div class="field"><label>شماره‌ی موبایل</label><input id="fPhone" name="phone" type="tel" inputmode="tel" placeholder="۰۹۱۲ ··· ····"><span class="f-err">شماره باید با ۰۹ شروع شود و ۱۱ رقم باشد.</span></div>
+      <div class="field"><label>آدرس</label><textarea id="fAddr" name="address" rows="3" placeholder="شهر، خیابان، پلاک…"></textarea><span class="f-err">آدرس را بنویسید.</span></div>
+    </form>
+    <div class="form-foot">
+      <div class="total-row"><span>مبلغ سفارش</span><b id="payTotal"></b></div>
+      <button class="btn solid w-full" id="payBtn" style="margin-top:14px">ثبت نهایی سفارش</button>
+    </div>
+  </div>
+
+  <div class="view" id="view-success">
+    <div class="success">
+      <span class="ok"><i data-lucide="check"></i></span>
+      <h4>سفارش شما ثبت شد</h4>
+      <span class="track">کد پیگیری: <span id="trackCode"></span></span>
+      <p>تا ۲ ساعت آینده برای تأیید سفارش و هماهنگی ارسال با شما تماس می‌گیریم.</p>
+      <button class="btn ghost" id="doneBtn">بازگشت به فروشگاه</button>
+    </div>
+  </div>
+</aside>
+
+<!-- منوی موبایل -->
+<div class="m-menu" id="mMenu">
+  <a href="#collection">اجناس</a>
+  <a href="#atelier">راهنمای سایز</a>
+  <a href="#story">درباره‌ی نُوا</a>
+  <a href="#contact">تماس</a>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="https://unpkg.com/lucide@0.294.0/dist/umd/lucide.min.js"></script>
+<script>
+/* ───────── ابزارها ───────── */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const faNum=n=>String(n).replace(/\d/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]);
+const money=n=>n.toLocaleString('fa-IR');
+const toEn=s=>s.replace(/[۰-۹]/g,d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g,d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+
+/* ───────── ارسال فرم‌ها به نتلیفی (سفارش‌ها و خبرنامه) ───────── */
+async function netlifyPost(formName, data){
+  try{
+    const body=new URLSearchParams({'form-name':formName, ...data}).toString();
+    const res=await fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body});
+    return res.ok;
+  }catch(e){ return false; }
+}
+
+/* ═════════ محصولات فروشگاه — اینجا را ویرایش کن ═════════
+   name : نام محصول
+   price: قیمت به تومان (فقط عدد، بدون ویرگول)
+   tag  : برچسب دلخواه مثل «جدید» (اختیاری)
+   img  : لینک مستقیم عکس (از imgbb.com بگیر). اگه خراب بود، عکس جایگزین خودکار می‌آید.
+═════════════════════════════════════════════════════════ */
+const PRODUCTS=[
+ {id:1,name:'مانتو کلاسیک «سرو»',price:2450000,tag:'جدید',seed:'nova-1',
+  img:'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=700&q=80&auto=format&fit=crop',
+  desc:'پارچه‌ی خنکِ لینن‌مخلوط، برش راسته و دکمه‌ی مخفی. برای محیط کار و قرارهای نیم‌روز؛ با هر چیزی جور درمی‌آید.'},
+ {id:2,name:'پیراهن میدی «ماهور»',price:1890000,tag:'محدود',seed:'nova-2',
+  img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=700&q=80&auto=format&fit=crop',
+  desc:'پیراهن میدی با کمرِ جمع‌شده؛ سبک و روان، برای مهمانی و روزمره.'},
+ {id:3,name:'کتانی روزمره «پُل»',price:1250000,seed:'nova-3',
+  img:'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700&q=80&auto=format&fit=crop',
+  desc:'کتانی سفید با زیره‌ی نرم و رویه‌ی قابل‌شست‌وشو؛ رفیق هر ستِ ساده.'},
+ {id:4,name:'کیف دوشی «تارا»',price:2100000,tag:'پرفروش',seed:'nova-4',
+  img:'https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700&q=80&auto=format&fit=crop',
+  desc:'کیف دوشی با بند بلند و جیب داخلی؛ جا برای همه‌ی وسایل ضروری‌ات.'},
+ {id:5,name:'شال نخی «نارون»',price:450000,seed:'nova-5',
+  img:'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&q=80&auto=format&fit=crop',
+  desc:'نخیِ خنک با رنگ‌بندی ملایم؛ برای هر فصل یک‌دست.'},
+ {id:6,name:'بالتو اورسایز «باران»',price:2750000,tag:'جدید',seed:'nova-6',
+  img:'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=700&q=80&auto=format&fit=crop',
+  desc:'بالتوی اورسایز با آستر ساتن و جیب‌های بزرگ؛ راحتی با خطِ شیک.'},
+];
+
+/* ───────── نوار متحرک ───────── */
+(()=>{
+  const items=['ارسال به سراسر ایران','ضمانت بازگشت ۷ روزه','جنس‌های منتخب و سلیقه‌دار','پرداخت در محل (تهران)','هر هفته اجناس جدید'];
+  const one=items.map(t=>`<span class="m-item">${t}<i></i></span>`).join('');
+  $('#mqTrack').innerHTML=one+one;
+})();
+
+/* ───────── رندر اجناس ───────── */
+PRODUCTS.forEach((p,i)=>{
+  const el=document.createElement('article');
+  el.className=`card p${i+1} reveal`;
+  el.style.setProperty('--d',(i*.06)+'s');
+  el.innerHTML=`
+    <span class="card-num">${faNum(String(i+1).padStart(2,'0'))}</span>
+    <figure>
+      ${p.tag?`<span class="tag">${p.tag}</span>`:''}
+      <img loading="lazy" src="${p.img}" alt="${p.name}"
+        onerror="this.onerror=null;this.src='https://picsum.photos/seed/${p.seed}/700/880.jpg'">
+    </figure>
+    <div class="card-row">
+      <h3>${p.name}</h3>
+      <span class="price">${money(p.price)} <small>تومان</small></span>
+    </div>`;
+  el.addEventListener('click',()=>openQV(p.id));
+  $('#grid').appendChild(el);
+});
+
+/* ───────── سبد خرید (با ذخیره‌ی خودکار) ───────── */
+let cart=[];
+try{cart=JSON.parse(localStorage.getItem('nova-cart')||'[]')}catch(e){}
+const saveCart=()=>{try{localStorage.setItem('nova-cart',JSON.stringify(cart))}catch(e){}};
+
+function updateBadge(){
+  const n=cart.reduce((a,c)=>a+c.qty,0), b=$('#bagBadge');
+  b.hidden=!n; b.textContent=money(n);
+}
+function renderCart(){
+  const body=$('#cartBody'), foot=$('#cartFoot');
+  if(!cart.length){
+    body.innerHTML=`<div class="cart-empty"><i data-lucide="shopping-bag"></i>
+      <p>سبد شما خالی است.<br>اجناس این هفته را ببین.</p>
+      <button class="btn ghost" id="goCol">دیدن اجناس</button></div>`;
+    foot.style.display='none'; lucide.createIcons();
+    $('#goCol').onclick=()=>{closeDrawer();$('#collection').scrollIntoView({behavior:'smooth'});};
+    return;
+  }
+  foot.style.display='';
+  body.innerHTML=cart.map(c=>`
+    <div class="c-item" data-key="${c.key}">
+      <img src="${c.img}" alt="" onerror="this.onerror=null;this.src='https://picsum.photos/seed/${c.seed}/144/184.jpg'">
+      <div class="c-info">
+        <h4>${c.name}</h4><span class="c-size">سایز ${c.size}</span>
+        <div class="c-qty">
+          <button data-act="dec" aria-label="کمتر"><i data-lucide="minus"></i></button>
+          <b>${money(c.qty)}</b>
+          <button data-act="inc" aria-label="بیشتر"><i data-lucide="plus"></i></button>
+        </div>
+      </div>
+      <div class="c-side">
+        <span class="price">${money(c.price*c.qty)} <small>تومان</small></span>
+        <button class="c-del" data-act="del" aria-label="حذف"><i data-lucide="trash-2"></i></button>
+      </div>
+    </div>`).join('');
+  $('#cartTotal').textContent=money(cart.reduce((a,c)=>a+c.price*c.qty,0))+' تومان';
+  lucide.createIcons();
+}
+ $('#cartBody').addEventListener('click',e=>{
+  const btn=e.target.closest('[data-act]'); if(!btn) return;
+  const key=e.target.closest('.c-item').dataset.key;
+  const it=cart.find(c=>c.key===key); if(!it) return;
+  if(btn.dataset.act==='inc') it.qty++;
+  if(btn.dataset.act==='dec'){ it.qty--; if(it.qty<1) cart=cart.filter(c=>c!==it); }
+  if(btn.dataset.act==='del') cart=cart.filter(c=>c!==it);
+  saveCart(); renderCart(); updateBadge();
+});
+function addToCart(p,size,fromEl){
+  const key=p.id+'|'+size, ex=cart.find(c=>c.key===key);
+  if(ex) ex.qty++; else cart.push({key,name:p.name,price:p.price,size,qty:1,img:p.img,seed:p.seed});
+  saveCart(); renderCart(); updateBadge();
+  if(fromEl) fly(fromEl);
+  toast(`${p.name} — سایز ${size} به سبد اضافه شد`);
+}
+
+/* ───────── کشوی سبد ───────── */
+const drawer=$('#drawer'), scrim=$('#scrim');
+function setView(v){ $$('#drawer .view').forEach(x=>x.classList.toggle('on',x.id==='view-'+v)); }
+function openDrawer(){ renderCart(); setView('cart'); drawer.classList.add('open'); scrim.classList.add('open'); document.body.style.overflow='hidden'; }
+function closeDrawer(){ drawer.classList.remove('open'); scrim.classList.remove('open'); document.body.style.overflow=''; }
+ $('#bagBtn').onclick=openDrawer;
+ $('#drawerClose').onclick=closeDrawer;
+scrim.onclick=closeDrawer;
+
+/* ───────── تسویه حساب ───────── */
+ $('#checkoutBtn').onclick=()=>{
+  if(!cart.length) return;
+  $('#payTotal').textContent=money(cart.reduce((a,c)=>a+c.price*c.qty,0))+' تومان';
+  setView('checkout');
+};
+ $('#backToCart').onclick=()=>setView('cart');
+
+ $('#payBtn').onclick=async()=>{
+  let ok=true;
+  const chk=(cond,id)=>{ const f=$(id).closest('.field'); f.classList.toggle('bad',!cond); if(!cond) ok=false; };
+  chk($('#fName').value.trim().length>=3,'#fName');
+  chk(/^09\d{9}$/.test(toEn($('#fPhone').value.trim())),'#fPhone');
+  chk($('#fAddr').value.trim().length>=8,'#fAddr');
+  if(!ok) return;
+
+  const total=cart.reduce((a,c)=>a+c.price*c.qty,0);
+  const code='NV-'+faNum(Math.floor(1000+Math.random()*9000));
+  const orderText=cart.map((c,i)=>`${faNum(i+1)}) ${c.name} | سایز ${c.size} | ${money(c.qty)} عدد | ${money(c.price*c.qty)} تومان`).join('\n');
+
+  const btn=$('#payBtn');
+  btn.disabled=true; btn.textContent='در حال ثبت سفارش…';
+
+  /* ارسال سفارش به نتلیفی → پنل + ایمیل شما */
+  const sent=await netlifyPost('orders',{
+    'name':$('#fName').value.trim(),
+    'phone':toEn($('#fPhone').value.trim()),
+    'address':$('#fAddr').value.trim(),
+    'order':orderText,
+    'total':money(total)+' تومان',
+    'code':code
+  });
+
+  btn.disabled=false; btn.textContent='ثبت نهایی سفارش';
+  if(!sent){ toast('ثبت سفارش انجام نشد؛ اتصال اینترنت را بررسی کن و دوباره بزن.'); return; }
+
+  $('#trackCode').textContent=code;
+  setView('success');
+};
+ $('#doneBtn').onclick=()=>{ cart=[]; saveCart(); updateBadge(); closeDrawer(); toast('سپاس از خرید شما؛ به‌زودی تماس می‌گیریم.'); };
+
+/* ───────── مودال محصول ───────── */
+const qv=$('#qv'); let qvProduct=null, qvSize=null;
+function openQV(id){
+  qvProduct=PRODUCTS.find(p=>p.id===id); qvSize=null;
+  const im=$('#qvImg');
+  im.src=qvProduct.img; im.onerror=function(){ this.onerror=null; this.src=`https://picsum.photos/seed/${qvProduct.seed}/700/880.jpg`; };
+  $('#qvTag').textContent=qvProduct.tag||'کالکشن این هفته';
+  $('#qvName').textContent=qvProduct.name;
+  $('#qvDesc').textContent=qvProduct.desc;
+  $('#qvPrice').innerHTML=`${money(qvProduct.price)} <small>تومان</small>`;
+  $('#qvErr').hidden=true;
+  const box=$('#qvSizes'); box.innerHTML='';
+  ['S','M','L','XL','XXL'].forEach(s=>{
+    const b=document.createElement('button'); b.textContent=s;
+    b.onclick=()=>{ qvSize=s; $$('#qvSizes button').forEach(x=>x.classList.toggle('on',x===b)); $('#qvErr').hidden=true; };
+    box.appendChild(b);
+  });
+  qv.classList.add('open'); document.body.style.overflow='hidden';
+}
+function closeQV(){ qv.classList.remove('open'); if(!drawer.classList.contains('open')) document.body.style.overflow=''; }
+ $$('#qv [data-close]').forEach(el=>el.onclick=closeQV);
+ $('#qvAdd').onclick=e=>{
+  if(!qvSize){ $('#qvErr').hidden=false; return; }
+  addToCart(qvProduct,qvSize,e.currentTarget);
+  setTimeout(closeQV,320);
+};
+document.addEventListener('keydown',e=>{ if(e.key==='Escape'){ closeQV(); closeDrawer(); closeMenu(); } });
+
+/* ───────── پرواز به سبد + توست ───────── */
+function fly(fromEl){
+  const bag=$('#bagBtn');
+  const a=fromEl.getBoundingClientRect(), b=bag.getBoundingClientRect();
+  const d=document.createElement('div'); d.className='fly-dot';
+  const sx=a.left+a.width/2, sy=a.top+a.height/2;
+  d.style.left=sx+'px'; d.style.top=sy+'px'; d.style.transform='translate(-50%,-50%)';
+  document.body.appendChild(d);
+  const dx=(b.left+b.width/2)-sx, dy=(b.top+b.height/2)-sy;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    d.style.transform=`translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(.25)`;
+    d.style.opacity='.35';
+  }));
+  setTimeout(()=>{ d.remove(); bag.classList.add('bump'); setTimeout(()=>bag.classList.remove('bump'),480); },760);
+}
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast';
+  t.innerHTML=`<i data-lucide="check"></i><span>${msg}</span>`;
+  $('#toasts').appendChild(t); lucide.createIcons();
+  setTimeout(()=>{ t.classList.add('bye'); setTimeout(()=>t.remove(),380); },2600);
+}
+
+/* ───────── راهنمای سایز ───────── */
+const SIZES=['S','M','L','XL','XXL'];
+function advise(){
+  const h=+$('#hIn').value, w=+$('#wIn').value;
+  $('#hOut').textContent=faNum(h); $('#wOut').textContent=faNum(w);
+  let i = w<55?0 : w<66?1 : w<80?2 : w<94?3 : 4;
+  const notes=[];
+  if(h>=180&&i<4){ i++; notes.push('برای قدِ بلند، یک سایز بالاتر پیشنهاد شد تا افتِ آستین درست باشد.'); }
+  else if(h<160&&i>0){ i--; notes.push('برای قدهای کوتاه‌تر، یک سایز پایین‌تر تا لباس تن را غرق نکند.'); }
+  if([55,66,80,94].includes(w)) notes.push('دقیقاً روی مرزِ دو سایزی هستی؛ اگر راحتی را بیشتر دوست داری، سایز بالاتر را انتخاب کن.');
+  const s=SIZES[i];
+  $$('#sizeTrack span').forEach(sp=>sp.classList.toggle('on',sp.dataset.s===s));
+  $('#sizeNote').innerHTML=`سایز پیشنهادی برای تو <b>${s}</b> است. ${notes.join(' ')||'بر اساس تنِ معمولِ این اندازه محاسبه شده؛ بالاتُن‌ها کمی آزاد دوخته/بریده می‌شوند.'}`;
+}
+ $('#hIn').oninput=advise; $('#wIn').oninput=advise; advise();
+
+/* ───────── خبرنامه (به نتلیفی ارسال می‌شود) ───────── */
+ $('#nlForm').addEventListener('submit',async e=>{
+  e.preventDefault();
+  const v=$('#nlInput').value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)){ $('#nlErr').textContent='یک ایمیل معتبر وارد کنید.'; return; }
+  const sent=await netlifyPost('newsletter',{email:v});
+  if(!sent){ $('#nlErr').textContent='ارسال انجام نشد؛ دوباره تلاش کن.'; return; }
+  $('#nlErr').textContent=''; $('#nlInput').value='';
+  toast('به خانواده‌ی نُوا خوش آمدی.');
+});
+
+/* ───────── منوی موبایل، هدر، ظاهرشدن ───────── */
+const mMenu=$('#mMenu');
+function closeMenu(){ mMenu.classList.remove('open'); document.body.style.overflow=''; }
+ $('#menuBtn').onclick=()=>{ mMenu.classList.contains('open')?closeMenu():(mMenu.classList.add('open'),document.body.style.overflow='hidden'); };
+ $$('#mMenu a').forEach(a=>a.onclick=closeMenu);
+addEventListener('scroll',()=>$('#siteHead').classList.toggle('scrolled',scrollY>24),{passive:true});
+const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }),{threshold:.12});
+ $$('.reveal').forEach(el=>io.observe(el));
+
+/* ───────── پارالاکس سه‌بعدی کارت‌های هیرو ───────── */
+(()=>{
+  if(!matchMedia('(pointer:fine)').matches) return;
+  const hero=$('#hero'); let tx=0,ty=0,cx=0,cy=0;
+  hero.addEventListener('mousemove',e=>{
+    const r=hero.getBoundingClientRect();
+    tx=((e.clientX-r.left)/r.width-.5)*2;
+    ty=((e.clientY-r.top)/r.height-.5)*2;
+  });
+  hero.addEventListener('mouseleave',()=>{tx=0;ty=0;});
+  (function pl(){
+    cx+=(tx-cx)*.06; cy+=(ty-cy)*.06;
+    $$('#hv .layer').forEach(l=>{ const d=+l.dataset.depth; l.style.transform=`translate3d(${(cx*d).toFixed(1)}px,${(cy*d).toFixed(1)}px,0)`; });
+    requestAnimationFrame(pl);
+  })();
+})();
+
+updateBadge();
+lucide.createIcons();
+</script>
+</body>
+</html>
